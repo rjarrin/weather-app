@@ -7,13 +7,27 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch",
     "start": "webpack serve --open",
-    "build": "webpack"
+    "build": "webpack",
+    "lint-main": "eslint './src/*.js' --fix",
+    "lint": "eslint './src/modules/*.js' --fix'",
+    "check-main": "prettier './src/*.js' --check",
+    "write-main": "prettier './src/*.js' --write",
+    "check": "prettier './src/modules/*.js' --check",
+    "write": "prettier './src/modules/*.js' --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/eslintrc": "^3.0.2",
+    "@eslint/js": "^9.0.0",
     "css-loader": "^7.1.1",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "globals": "^15.0.0",
+    "prettier": "^3.2.5",
     "style-loader": "^4.0.0",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
