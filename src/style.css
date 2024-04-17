@@ -2,3 +2,61 @@
     font-family: MyFont;
     src: url("./fonts/MerriweatherSans.ttf");
 }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+#logo-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.row-format {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-family: MyFont;
+}
+
+.row-format p,
+.row-format h2 {
+    margin: auto 2px;
+}
+
+.search-container {
+    margin-left: auto;
+    display: flex;
+    height: 28px;
+    margin-top: 10px;
+    align-items: center;
+}
+
+#search-icon {
+    width: 25px;
+    height: 25px;
+}
+
+#search-bar {
+    margin-left: 10px;
+    padding: 5px;
+}
+
+#theme-icon {
+    width: 25px;
+    height: 25px;
+    margin: 10px 5px;
+    cursor: pointer;
+    /* margin-left: auto; */
+}

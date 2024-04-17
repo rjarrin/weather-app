@@ -8,10 +8,7 @@
     "watch": "webpack --watch",
     "start": "webpack serve --open",
     "build": "webpack",
-    "lint-main": "eslint './src/*.js' --fix",
-    "lint": "eslint './src/modules/*.js' --fix'",
-    "check-main": "prettier './src/*.js' --check",
-    "write-main": "prettier './src/*.js' --write",
+    "lint": "eslint './src/modules/*.js' --fix",
     "check": "prettier './src/modules/*.js' --check",
     "write": "prettier './src/modules/*.js' --write"
   },

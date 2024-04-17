@@ -12,7 +12,13 @@ const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({baseDirectory: __dirname, recommendedConfig: pluginJs.configs.recommended});
 
 export default [
-  {languageOptions: { globals: globals.browser }},
+  {
+    languageOptions: { globals: globals.browser },
+    rules: {
+      "import/no-named-as-default": "off",
+      "import/no-named-as-default-member": "off",
+    },
+ },
   ...compat.extends("airbnb-base"),
   eslintConfigPrettier,
 ];
