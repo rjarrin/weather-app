@@ -60,3 +60,14 @@ body {
     cursor: pointer;
     /* margin-left: auto; */
 }
+
+footer {
+    color: white;
+    background-color: black;
+    margin-bottom: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: MyFont;
+    font-size: smaller;
+}
