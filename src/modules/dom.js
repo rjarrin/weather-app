@@ -12,6 +12,11 @@ const mockWeatherData = [
     { day: 'Overmorrow', condition: 'Snowing', temperature: '-10°C' },
 ];
 
+const mockForecastData = [
+    { hour: '12:00', condition: 'Sunny', temperature: '20°C' },
+    { hour: '13:00', condition: 'Cloudy', temperature: '18°C' },
+];
+
 function updateCity() {
     // TODO: Return city based on the searched result
 
@@ -19,35 +24,71 @@ function updateCity() {
     return 'Toronto';
 }
 
-export function generateWeatherCards() {
-    console.log('generateWeather Implemented');
-    // Get the container element
-    const container = document.getElementById('container');
-    container.style.border = '1px solid red';
+function generateWeatherCard(containerName, data) {
+    // Retrieve the appropriate container
+    const container = document.querySelector(containerName);
+    // Create the weather card for the container
+    const card = document.createElement("div");
+    card.classList.add("weather-card");
+    // Create the weather condition image
+    const img = document.createElement("img");
+    img.src = temp;
+    img.alt = data.condition;
+    // Create the status text
+    const status = document.createElement("p");
+    status.textContent = `${data.condition}`;
+    // Create the temperature text
+    const temperature = document.createElement("p");
+    temperature.textContent = `${data.temperature}`;
+    // Append the elements to the card
+    card.appendChild(img);
+    card.appendChild(status);
+    card.appendChild(temperature);
+    container.appendChild(card);
+}
 
-    // Loop through the weather data and create a card for each day
-    mockWeatherData.forEach((day) => {
-        // Create the card container
-        const card = document.createElement('div');
-        card.classList.add('weather-card');
-        card.style.border = '1px solid blue';
-        // Create the weather confition image
-        const img = document.createElement('img');
-        img.src = temp;
-        img.alt = day.condition;
-        // Create the weather condition text
-        const status = document.createElement('p');
-        status.textContent = `${day.condition}`;
-        // Create the temperature text
-        const temperature = document.createElement('p');
-        temperature.textContent = `${day.temperature}`;
-        // Append the card elements to the card
-        card.appendChild(img);
-        card.appendChild(status);
-        card.appendChild(temperature);
-        // Append the card to the container
-        container.appendChild(card);
+// function initTodayCard() {
+//     // Get the today container
+//     const container = getElementById("today-container");
+//     // Create the weather card
+//     generateWeatherCard()
+// }
+
+function generateForecastContainer(containerName, forecastData) {
+    // Retrieve the appropriate container
+    const container = document.querySelector(containerName);
+    // Create the hidden container for the hourly forecast
+    const forecastContainer = document.createElement("div");
+    forecastContainer.classList.add("forecast-container");
+    // Add temp data to the container
+    forecastData.forEach(data => {
+        const forecastItem = document.createElement("div");
+        forecastItem.classList.add("forecast-item");
+        // Hour
+        const hour = document.createElement("p");
+        hour.textContent = data.hour;
+        forecastItem.appendChild(hour);
+        // Condition
+        const condition = document.createElement("p");
+        condition.textContent = data.condition;
+        forecastItem.appendChild(condition);
+        // Temperature
+        const weather = document.createElement("p");
+        weather.textContent = data.temperature;
+        forecastItem.appendChild(weather);
+        // Append all elements to the forecast container
+        forecastContainer.appendChild(forecastItem);
     });
+    container.appendChild(forecastContainer);
+}
+
+export function generateBodyContainer() {
+    generateWeatherCard(".today-container", mockWeatherData[0]);
+    generateWeatherCard(".tomorrow-container", mockWeatherData[1]);
+    generateWeatherCard(".overmorrow-container", mockWeatherData[2]);
+    generateForecastContainer(".today-container", mockForecastData);
+    generateForecastContainer(".tomorrow-container", mockForecastData);
+    generateForecastContainer(".overmorrow-container", mockForecastData);
 }
 
 export function generateHeader() {

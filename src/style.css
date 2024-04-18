@@ -80,7 +80,51 @@ footer {
     font-size: smaller;
 }
 
+.weather-card {
+    padding: 5px;
+    border: 1px solid salmon;
+    width: 200px;
+    height: 200px;
+    min-width: 200px;
+    margin: 5px 0px 10px 5px;
+}
+
 .weather-card img {
     width: 40px;
     height: 40px;
+}
+
+.weather-card p {
+    font-family: MyFont;
+    font-size: 14px;
+}
+
+.today-container,
+.tomorrow-container,
+.overmorrow-container {
+    height: 32vh;
+    border: 1px solid blue;
+    display: flex;
+    flex-direction: row;
+}
+
+.forecast-container {
+    border: 1px solid black;
+    margin: 5px 5px 10px 0px;
+    display: flex;
+    overflow: hidden;
+    width: 0;
+    transition: width 0.5s ease-in-out;
+}
+
+.forecast-item {
+    border: 1px solid red;
+    display: flex;
+    flex-direction: column;
+}
+
+.today-container:hover .forecast-container,
+.tomorrow-container:hover .forecast-container,
+.overmorrow-container:hover .forecast-container {
+    width: 80vw;
 }
