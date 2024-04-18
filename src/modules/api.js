@@ -2,11 +2,12 @@
 const API_KEY = 'd2f02578eea344a18f1221808241304';
 const BASE_URL = 'http://api.weatherapi.com/v1/';
 
-async function fetchWeatherData(city) {
+export async function fetchWeatherData(city) {
     let data = null;
     try {
         const response = await fetch(
-            `${BASE_URL}current.json?key=${API_KEY}&q=${city}`, { mode: 'cors'}
+            `${BASE_URL}current.json?key=${API_KEY}&q=${city}`,
+            { mode: 'cors' },
         );
         data = await response.json();
         return data;
@@ -18,7 +19,7 @@ async function fetchWeatherData(city) {
     return data;
 }
 
-async function fetchForecastData(city) {
+export async function fetchForecastData(city) {
     let data = null;
     try {
         const response = await fetch(
@@ -32,5 +33,3 @@ async function fetchForecastData(city) {
     }
     return data;
 }
-
-export { fetchWeatherData, fetchForecastData };

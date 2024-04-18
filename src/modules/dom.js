@@ -2,6 +2,15 @@
 import logoImage from '../images/weather-app-logo.png';
 import searchIcon from '../images/magnify.svg';
 import themeIcon from '../images/theme-light-dark.svg';
+import temp from '../images/tempimage.jpg';
+import celsius from '../images/temperature-celsius.svg';
+import fahrenheit from '../images/temperature-fahrenheit.svg';
+
+const mockWeatherData = [
+    { day: 'Today', condition: 'Sunny', temperature: '20°C' },
+    { day: 'Tomorrow', condition: 'Raining', temperature: '9°C' },
+    { day: 'Overmorrow', condition: 'Snowing', temperature: '-10°C' },
+];
 
 function updateCity() {
     // TODO: Return city based on the searched result
@@ -10,7 +19,38 @@ function updateCity() {
     return 'Toronto';
 }
 
-export default function generateHeader() {
+export function generateWeatherCards() {
+    console.log('generateWeather Implemented');
+    // Get the container element
+    const container = document.getElementById('container');
+    container.style.border = '1px solid red';
+
+    // Loop through the weather data and create a card for each day
+    mockWeatherData.forEach((day) => {
+        // Create the card container
+        const card = document.createElement('div');
+        card.classList.add('weather-card');
+        card.style.border = '1px solid blue';
+        // Create the weather confition image
+        const img = document.createElement('img');
+        img.src = temp;
+        img.alt = day.condition;
+        // Create the weather condition text
+        const status = document.createElement('p');
+        status.textContent = `${day.condition}`;
+        // Create the temperature text
+        const temperature = document.createElement('p');
+        temperature.textContent = `${day.temperature}`;
+        // Append the card elements to the card
+        card.appendChild(img);
+        card.appendChild(status);
+        card.appendChild(temperature);
+        // Append the card to the container
+        container.appendChild(card);
+    });
+}
+
+export function generateHeader() {
     // Identify the header
     const header = document.getElementById('header');
 
@@ -50,6 +90,12 @@ export default function generateHeader() {
     searchContainer.appendChild(search);
     searchContainer.appendChild(searchBar);
 
+    // Create temp-toggle button for the container
+    const toggle = document.createElement('img');
+    toggle.id = 'temperature-toggle';
+    toggle.src = celsius;
+    toggle.alt = 'Toggle';
+
     // Create theme button for the container
     const theme = document.createElement('img');
     theme.id = 'theme-icon';
@@ -60,7 +106,6 @@ export default function generateHeader() {
     header.appendChild(logo);
     header.appendChild(textContainer);
     header.appendChild(searchContainer);
+    header.appendChild(toggle);
     header.appendChild(theme);
 }
-
-// export default {generateHeader};

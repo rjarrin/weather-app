@@ -46,6 +46,7 @@ body {
 #search-icon {
     width: 25px;
     height: 25px;
+    cursor: pointer;
 }
 
 #search-bar {
@@ -53,12 +54,19 @@ body {
     padding: 5px;
 }
 
-#theme-icon {
+#theme-icon,
+#temperature-toggle {
     width: 25px;
     height: 25px;
     margin: 10px 5px;
+    margin-bottom: 0;
     cursor: pointer;
-    /* margin-left: auto; */
+}
+
+#theme-icon:hover,
+#temperature-toggle:hover,
+#search-icon:hover {
+    filter: brightness(0) saturate(100%) invert(52%) sepia(70%) saturate(482%) hue-rotate(149deg) brightness(88%) contrast(91%);
 }
 
 footer {
@@ -70,4 +78,9 @@ footer {
     justify-content: center;
     font-family: MyFont;
     font-size: smaller;
+}
+
+.weather-card img {
+    width: 40px;
+    height: 40px;
 }
