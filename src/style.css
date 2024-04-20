@@ -131,6 +131,9 @@ footer {
     display: flex;
     flex-direction: column;
     min-width: 100px;
+    align-items: center;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .today-container:hover .forecast-container,

@@ -57,6 +57,12 @@ function generateForecastContainer(containerName, forecastData) {
             : 'N/A';
         forecastItem.appendChild(hour);
 
+        // Icon
+        const weatherIcon = document.createElement('img');
+        weatherIcon.src = data.condition.icon;
+        weatherIcon.alt = data.condition ? data.condition.text : 'Icon';
+        forecastItem.appendChild(weatherIcon);
+
         // Condition
         const condition = document.createElement('p');
         condition.textContent = data.condition ? data.condition.text : 'N/A';
