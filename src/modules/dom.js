@@ -2,20 +2,9 @@
 import logoImage from '../images/weather-app-logo.png';
 import searchIcon from '../images/magnify.svg';
 import themeIcon from '../images/theme-light-dark.svg';
-import temp from '../images/tempimage.jpg';
 import celsius from '../images/temperature-celsius.svg';
-import fahrenheit from '../images/temperature-fahrenheit.svg';
-
-const mockWeatherData = [
-    { day: 'Today', condition: 'Sunny', temperature: '20°C' },
-    { day: 'Tomorrow', condition: 'Raining', temperature: '9°C' },
-    { day: 'Overmorrow', condition: 'Snowing', temperature: '-10°C' },
-];
-
-const mockForecastData = [
-    { hour: '12:00', condition: 'Sunny', temperature: '20°C' },
-    { hour: '13:00', condition: 'Cloudy', temperature: '18°C' },
-];
+// import fahrenheit from '../images/temperature-fahrenheit.svg';
+import { fetchForecastData } from './api';
 
 function updateCity() {
     // TODO: Return city based on the searched result
@@ -28,17 +17,17 @@ function generateWeatherCard(containerName, data) {
     // Retrieve the appropriate container
     const container = document.querySelector(containerName);
     // Create the weather card for the container
-    const card = document.createElement("div");
-    card.classList.add("weather-card");
+    const card = document.createElement('div');
+    card.classList.add('weather-card');
     // Create the weather condition image
-    const img = document.createElement("img");
-    img.src = temp;
+    const img = document.createElement('img');
+    img.src = `${data.icon}`;
     img.alt = data.condition;
     // Create the status text
-    const status = document.createElement("p");
+    const status = document.createElement('p');
     status.textContent = `${data.condition}`;
     // Create the temperature text
-    const temperature = document.createElement("p");
+    const temperature = document.createElement('p');
     temperature.textContent = `${data.temperature}`;
     // Append the elements to the card
     card.appendChild(img);
@@ -47,48 +36,91 @@ function generateWeatherCard(containerName, data) {
     container.appendChild(card);
 }
 
-// function initTodayCard() {
-//     // Get the today container
-//     const container = getElementById("today-container");
-//     // Create the weather card
-//     generateWeatherCard()
-// }
-
 function generateForecastContainer(containerName, forecastData) {
     // Retrieve the appropriate container
     const container = document.querySelector(containerName);
     // Create the hidden container for the hourly forecast
-    const forecastContainer = document.createElement("div");
-    forecastContainer.classList.add("forecast-container");
-    // Add temp data to the container
-    forecastData.forEach(data => {
-        const forecastItem = document.createElement("div");
-        forecastItem.classList.add("forecast-item");
+    const forecastContainer = document.createElement('div');
+    forecastContainer.classList.add('forecast-container');
+    // Add forecst data to the container
+    forecastData.forEach((data) => {
+        const forecastItem = document.createElement('div');
+        forecastItem.classList.add('forecast-item');
+
         // Hour
-        const hour = document.createElement("p");
-        hour.textContent = data.hour;
+        const hour = document.createElement('p');
+        hour.textContent = data.time_epoch
+            ? new Date(data.time_epoch * 1000).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+              })
+            : 'N/A';
         forecastItem.appendChild(hour);
+
         // Condition
-        const condition = document.createElement("p");
-        condition.textContent = data.condition;
+        const condition = document.createElement('p');
+        condition.textContent = data.condition ? data.condition.text : 'N/A';
         forecastItem.appendChild(condition);
+
         // Temperature
-        const weather = document.createElement("p");
-        weather.textContent = data.temperature;
-        forecastItem.appendChild(weather);
+        const temperature = document.createElement('p');
+        temperature.textContent = data.temp_c ? `${data.temp_c}°C` : 'N/A';
+        forecastItem.appendChild(temperature);
+
         // Append all elements to the forecast container
         forecastContainer.appendChild(forecastItem);
     });
+
+    // Append the forecast container to the specified container
     container.appendChild(forecastContainer);
 }
 
-export function generateBodyContainer() {
-    generateWeatherCard(".today-container", mockWeatherData[0]);
-    generateWeatherCard(".tomorrow-container", mockWeatherData[1]);
-    generateWeatherCard(".overmorrow-container", mockWeatherData[2]);
-    generateForecastContainer(".today-container", mockForecastData);
-    generateForecastContainer(".tomorrow-container", mockForecastData);
-    generateForecastContainer(".overmorrow-container", mockForecastData);
+export async function generateBodyContainer() {
+    const city = updateCity();
+
+    const weatherData = await fetchForecastData(city);
+
+    // Extract today's weather data
+    const currentWeather = {
+        day: 'Today',
+        icon: weatherData.current.condition.icon,
+        condition: weatherData.current.condition.text,
+        temperature: `${weatherData.current.temp_c}°C`,
+        f_temperature: `${weatherData.current.temp_f}°F`,
+    };
+    generateWeatherCard('.today-container', currentWeather);
+
+    // Extract tomorrow's weather data
+    const tomorrowWeather = {
+        day: 'Tomorrow',
+        icon: weatherData.forecast.forecastday[1].day.condition.icon,
+        condition: weatherData.forecast.forecastday[1].day.condition.text,
+        temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_c}°C`,
+        f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
+    };
+    generateWeatherCard('.tomorrow-container', tomorrowWeather);
+
+    // Extract overmorrow's weather data
+    const overmorrowWeather = {
+        day: 'Overmorrow',
+        icon: weatherData.forecast.forecastday[2].day.condition.icon,
+        condition: weatherData.forecast.forecastday[2].day.condition.text,
+        temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_c}°C`,
+        f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
+    };
+    generateWeatherCard('.overmorrow-container', overmorrowWeather);
+
+    // Extract hourly forecast data for today
+    const todayHourly = weatherData.forecast.forecastday[0].hour;
+    generateForecastContainer('.today-container', todayHourly);
+
+    // Extract hourly forecast data for tomorrow
+    const tomorrowHourly = weatherData.forecast.forecastday[1].hour;
+    generateForecastContainer('.tomorrow-container', tomorrowHourly);
+
+    // Extract hourly forecast data for overmorrow
+    const overmorrowHourly = weatherData.forecast.forecastday[2].hour;
+    generateForecastContainer('.overmorrow-container', overmorrowHourly);
 }
 
 export function generateHeader() {

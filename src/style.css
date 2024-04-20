@@ -87,11 +87,14 @@ footer {
     height: 200px;
     min-width: 200px;
     margin: 5px 0px 10px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .weather-card img {
-    width: 40px;
-    height: 40px;
+    width: 100px;
+    height: 100px;
 }
 
 .weather-card p {
@@ -115,12 +118,19 @@ footer {
     overflow: hidden;
     width: 0;
     transition: width 0.5s ease-in-out;
+    overflow-x: scroll;
+}
+
+.forecast-container p {
+    font-family: 'MyFont';
+    font-size: 10px;
 }
 
 .forecast-item {
     border: 1px solid red;
     display: flex;
     flex-direction: column;
+    min-width: 100px;
 }
 
 .today-container:hover .forecast-container,
