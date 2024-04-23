@@ -1,4 +1,4 @@
-import { updateWeatherCard } from "./dom";
+import { updateWeatherCard, updateForecastCards } from './dom';
 
 // Set flag/toggle for Celsius units
 let isCelsius = true;
@@ -20,7 +20,7 @@ function handleCitySearch() {
     //                 errorMsg.classList.add("error-message");
     //                 document.getElementById("header").appendChild(errorMsg);
     //                 // Remove the error message after 3 seconds
-    //                 setTimeout(() => errorMsg.remove(), 3000); 
+    //                 setTimeout(() => errorMsg.remove(), 3000);
     //             }
     //         }
     //     }
@@ -28,11 +28,12 @@ function handleCitySearch() {
 }
 
 function toggleTemperatureUnits() {
-    const toggleButton = document.getElementById("temperature-toggle");
-    toggleButton.addEventListener("click", async() => {
+    const toggleButton = document.getElementById('temperature-toggle');
+    toggleButton.addEventListener('click', async () => {
         isCelsius = !isCelsius;
         // Just need to update the values shown in the card with f_temperature
         updateWeatherCard(isCelsius);
+        updateForecastCards(isCelsius);
     });
 }
 
@@ -43,4 +44,4 @@ function toggleTheme() {
     // });
 }
 
-export {handleCitySearch, toggleTemperatureUnits, toggleTheme};
+export { handleCitySearch, toggleTemperatureUnits, toggleTheme };

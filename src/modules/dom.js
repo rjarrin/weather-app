@@ -10,6 +10,7 @@ import { fetchForecastData } from './api';
 let todayInformation;
 let tomorrowInformation;
 let overmorrowInformation;
+let weatherInformation;
 
 function updateCity() {
     // TODO: Return city based on the searched result
@@ -76,6 +77,7 @@ function generateForecastContainer(containerName, forecastData) {
 
         // Temperature
         const temperature = document.createElement('p');
+        temperature.classList.add("forecast-temperature");
         temperature.textContent = data.temp_c ? `${data.temp_c}°C` : 'N/A';
         forecastItem.appendChild(temperature);
 
@@ -136,9 +138,9 @@ export async function generateBodyContainer(city) {
 
     // Update global information
     todayInformation = currentWeather;
-    console.log(todayInformation);
     tomorrowInformation = tomorrowWeather;
     overmorrowInformation = overmorrowWeather;
+    weatherInformation = weatherData;
 }
 
 export function generateHeader() {
@@ -218,8 +220,32 @@ export function updateWeatherCard(isCelsius) {
         array.forEach((containerName, index) => {
             // Retrieve the appropriate container element
             const containerText = document.querySelector(`${containerName} .weather-temperature`);
-            // Change to Celsius
+            // Change to Fahrenheit
             containerText.textContent = weatherArray[index].f_temperature;
         });
     }
+}
+
+export function updateForecastCards(isCelsius) {
+    const array = [".today-container", ".tomorrow-container", ".overmorrow-container"];
+    const weatherArray = [weatherInformation.forecast.forecastday[0].hour, weatherInformation.forecast.forecastday[1].hour, weatherInformation.forecast.forecastday[2].hour];
+    // Iterate over each forecast container
+    array.forEach((containerName, index) => {
+        // Select the forecast container element
+        const forecastContainer = document.querySelector(`${containerName} .forecast-container`);
+        // Select all forecast items within the current forecast container
+        const forecastItems = forecastContainer.querySelectorAll('.forecast-item');
+        // Iterate over each forecast item
+        forecastItems.forEach((item, itemIndex) => {
+            const temperatureElement = item.querySelector(".forecast-temperature");
+            // Check if the temperature should be displayed in Celsius
+            if(isCelsius) {
+                // Update the temperature text to Celsius
+                temperatureElement.textContent = `${weatherArray[index][itemIndex].temp_c}°C`;
+            } else {
+                // Update the temperature text to Fahrenheit
+                temperatureElement.textContent = `${weatherArray[index][itemIndex].temp_f}°F`;
+            }
+        });
+    });
 }
