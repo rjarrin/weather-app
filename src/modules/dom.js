@@ -6,6 +6,11 @@ import celsius from '../images/temperature-celsius.svg';
 // import fahrenheit from '../images/temperature-fahrenheit.svg';
 import { fetchForecastData } from './api';
 
+// Globals to hold weather data (avoid fetching multiple times)
+let todayInformation;
+let tomorrowInformation;
+let overmorrowInformation;
+
 function updateCity() {
     // TODO: Return city based on the searched result
 
@@ -28,6 +33,7 @@ function generateWeatherCard(containerName, data) {
     status.textContent = `${data.condition}`;
     // Create the temperature text
     const temperature = document.createElement('p');
+    temperature.classList.add("weather-temperature");
     temperature.textContent = `${data.temperature}`;
     // Append the elements to the card
     card.appendChild(img);
@@ -81,8 +87,8 @@ function generateForecastContainer(containerName, forecastData) {
     container.appendChild(forecastContainer);
 }
 
-export async function generateBodyContainer() {
-    const city = updateCity();
+export async function generateBodyContainer(city) {
+    // const city = updateCity();
 
     const weatherData = await fetchForecastData(city);
 
@@ -112,7 +118,7 @@ export async function generateBodyContainer() {
         icon: weatherData.forecast.forecastday[2].day.condition.icon,
         condition: weatherData.forecast.forecastday[2].day.condition.text,
         temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_c}°C`,
-        f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
+        f_temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_f}°F`,
     };
     generateWeatherCard('.overmorrow-container', overmorrowWeather);
 
@@ -127,6 +133,12 @@ export async function generateBodyContainer() {
     // Extract hourly forecast data for overmorrow
     const overmorrowHourly = weatherData.forecast.forecastday[2].hour;
     generateForecastContainer('.overmorrow-container', overmorrowHourly);
+
+    // Update global information
+    todayInformation = currentWeather;
+    console.log(todayInformation);
+    tomorrowInformation = tomorrowWeather;
+    overmorrowInformation = overmorrowWeather;
 }
 
 export function generateHeader() {
@@ -187,4 +199,27 @@ export function generateHeader() {
     header.appendChild(searchContainer);
     header.appendChild(toggle);
     header.appendChild(theme);
+}
+
+
+export function updateWeatherCard(isCelsius) {
+    const array = [".today-container"];
+    const weatherArray = [todayInformation];
+    if(isCelsius) {
+        // Change all temperature code to Celsius if the flag is set to true
+        array.forEach((containerName, index) => {
+            // Retrieve the appropriate container element
+            const containerText = document.querySelector(`${containerName} .weather-temperature`);
+            // Change to Celsius
+            containerText.textContent = weatherArray[index].temperature;
+        });
+    } else {
+        // Else, change all temperature code to Fahrenheit
+        array.forEach((containerName, index) => {
+            // Retrieve the appropriate container element
+            const containerText = document.querySelector(`${containerName} .weather-temperature`);
+            // Change to Celsius
+            containerText.textContent = weatherArray[index].f_temperature;
+        });
+    }
 }

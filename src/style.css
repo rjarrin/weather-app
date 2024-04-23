@@ -134,6 +134,7 @@ footer {
     align-items: center;
     margin-right: 10px;
     margin-left: 10px;
+    margin-top: 7px;
 }
 
 .today-container:hover .forecast-container,
