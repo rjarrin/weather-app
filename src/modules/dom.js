@@ -203,8 +203,8 @@ export function generateHeader() {
 
 
 export function updateWeatherCard(isCelsius) {
-    const array = [".today-container"];
-    const weatherArray = [todayInformation];
+    const array = [".today-container", ".tomorrow-container", ".overmorrow-container"];
+    const weatherArray = [todayInformation, tomorrowInformation, overmorrowInformation];
     if(isCelsius) {
         // Change all temperature code to Celsius if the flag is set to true
         array.forEach((containerName, index) => {
