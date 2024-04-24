@@ -3,7 +3,7 @@ import logoImage from '../images/weather-app-logo.png';
 import searchIcon from '../images/magnify.svg';
 import themeIcon from '../images/theme-light-dark.svg';
 import celsius from '../images/temperature-celsius.svg';
-// import fahrenheit from '../images/temperature-fahrenheit.svg';
+import fahrenheit from '../images/temperature-fahrenheit.svg';
 import { fetchForecastData } from './api';
 
 // Globals to hold weather data (avoid fetching multiple times)
@@ -16,7 +16,7 @@ function updateCity() {
     // TODO: Return city based on the searched result
 
     // Return default value
-    return 'Toronto';
+    return 'Toronto, Ontario';
 }
 
 function generateWeatherCard(containerName, data) {
@@ -27,14 +27,16 @@ function generateWeatherCard(containerName, data) {
     card.classList.add('weather-card');
     // Create the weather condition image
     const img = document.createElement('img');
+    img.classList.add('weather-icon');
     img.src = `${data.icon}`;
     img.alt = data.condition;
     // Create the status text
     const status = document.createElement('p');
+    status.classList.add('weather-status');
     status.textContent = `${data.condition}`;
     // Create the temperature text
     const temperature = document.createElement('p');
-    temperature.classList.add("weather-temperature");
+    temperature.classList.add('weather-temperature');
     temperature.textContent = `${data.temperature}`;
     // Append the elements to the card
     card.appendChild(img);
@@ -77,7 +79,7 @@ function generateForecastContainer(containerName, forecastData) {
 
         // Temperature
         const temperature = document.createElement('p');
-        temperature.classList.add("forecast-temperature");
+        temperature.classList.add('forecast-temperature');
         temperature.textContent = data.temp_c ? `${data.temp_c}°C` : 'N/A';
         forecastItem.appendChild(temperature);
 
@@ -89,39 +91,84 @@ function generateForecastContainer(containerName, forecastData) {
     container.appendChild(forecastContainer);
 }
 
+function retrieveDateWeather(weatherData, key) {
+    let data;
+    switch (key) {
+        case 0:
+            data = {
+                day: 'Today',
+                icon: weatherData.current.condition.icon,
+                condition: weatherData.current.condition.text,
+                temperature: `${weatherData.current.temp_c}°C`,
+                f_temperature: `${weatherData.current.temp_f}°F`,
+            };
+            break;
+
+        case 1:
+            data = {
+                day: 'Tomorrow',
+                icon: weatherData.forecast.forecastday[1].day.condition.icon,
+                condition:
+                    weatherData.forecast.forecastday[1].day.condition.text,
+                temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_c}°C`,
+                f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
+            };
+            break;
+
+        case 2:
+            data = {
+                day: 'Overmorrow',
+                icon: weatherData.forecast.forecastday[2].day.condition.icon,
+                condition:
+                    weatherData.forecast.forecastday[2].day.condition.text,
+                temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_c}°C`,
+                f_temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_f}°F`,
+            };
+            break;
+
+        default:
+            console.error('Something went wrong with retrieveDateWeather');
+            break;
+    }
+    return data;
+}
+
 export async function generateBodyContainer(city) {
     // const city = updateCity();
 
     const weatherData = await fetchForecastData(city);
 
     // Extract today's weather data
-    const currentWeather = {
-        day: 'Today',
-        icon: weatherData.current.condition.icon,
-        condition: weatherData.current.condition.text,
-        temperature: `${weatherData.current.temp_c}°C`,
-        f_temperature: `${weatherData.current.temp_f}°F`,
-    };
+    // const currentWeather = {
+    //     day: 'Today',
+    //     icon: weatherData.current.condition.icon,
+    //     condition: weatherData.current.condition.text,
+    //     temperature: `${weatherData.current.temp_c}°C`,
+    //     f_temperature: `${weatherData.current.temp_f}°F`,
+    // };
+    const currentWeather = retrieveDateWeather(weatherData, 0);
     generateWeatherCard('.today-container', currentWeather);
 
     // Extract tomorrow's weather data
-    const tomorrowWeather = {
-        day: 'Tomorrow',
-        icon: weatherData.forecast.forecastday[1].day.condition.icon,
-        condition: weatherData.forecast.forecastday[1].day.condition.text,
-        temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_c}°C`,
-        f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
-    };
+    // const tomorrowWeather = {
+    //     day: 'Tomorrow',
+    //     icon: weatherData.forecast.forecastday[1].day.condition.icon,
+    //     condition: weatherData.forecast.forecastday[1].day.condition.text,
+    //     temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_c}°C`,
+    //     f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
+    // };
+    const tomorrowWeather = retrieveDateWeather(weatherData, 1);
     generateWeatherCard('.tomorrow-container', tomorrowWeather);
 
     // Extract overmorrow's weather data
-    const overmorrowWeather = {
-        day: 'Overmorrow',
-        icon: weatherData.forecast.forecastday[2].day.condition.icon,
-        condition: weatherData.forecast.forecastday[2].day.condition.text,
-        temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_c}°C`,
-        f_temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_f}°F`,
-    };
+    // const overmorrowWeather = {
+    //     day: 'Overmorrow',
+    //     icon: weatherData.forecast.forecastday[2].day.condition.icon,
+    //     condition: weatherData.forecast.forecastday[2].day.condition.text,
+    //     temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_c}°C`,
+    //     f_temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_f}°F`,
+    // };
+    const overmorrowWeather = retrieveDateWeather(weatherData, 2);
     generateWeatherCard('.overmorrow-container', overmorrowWeather);
 
     // Extract hourly forecast data for today
@@ -161,6 +208,7 @@ export function generateHeader() {
     title.textContent = 'My Weather App';
     // Create the city name text
     const cityName = document.createElement('p');
+    cityName.id = 'header-city-name';
     cityName.textContent = updateCity();
     // Append the title and city to the text container
     textContainer.appendChild(title);
@@ -203,15 +251,24 @@ export function generateHeader() {
     header.appendChild(theme);
 }
 
-
-export function updateWeatherCard(isCelsius) {
-    const array = [".today-container", ".tomorrow-container", ".overmorrow-container"];
-    const weatherArray = [todayInformation, tomorrowInformation, overmorrowInformation];
-    if(isCelsius) {
+export function updateWeatherCardTemp(isCelsius) {
+    const array = [
+        '.today-container',
+        '.tomorrow-container',
+        '.overmorrow-container',
+    ];
+    const weatherArray = [
+        todayInformation,
+        tomorrowInformation,
+        overmorrowInformation,
+    ];
+    if (isCelsius) {
         // Change all temperature code to Celsius if the flag is set to true
         array.forEach((containerName, index) => {
             // Retrieve the appropriate container element
-            const containerText = document.querySelector(`${containerName} .weather-temperature`);
+            const containerText = document.querySelector(
+                `${containerName} .weather-temperature`,
+            );
             // Change to Celsius
             containerText.textContent = weatherArray[index].temperature;
         });
@@ -219,27 +276,42 @@ export function updateWeatherCard(isCelsius) {
         // Else, change all temperature code to Fahrenheit
         array.forEach((containerName, index) => {
             // Retrieve the appropriate container element
-            const containerText = document.querySelector(`${containerName} .weather-temperature`);
+            const containerText = document.querySelector(
+                `${containerName} .weather-temperature`,
+            );
             // Change to Fahrenheit
             containerText.textContent = weatherArray[index].f_temperature;
         });
     }
 }
 
-export function updateForecastCards(isCelsius) {
-    const array = [".today-container", ".tomorrow-container", ".overmorrow-container"];
-    const weatherArray = [weatherInformation.forecast.forecastday[0].hour, weatherInformation.forecast.forecastday[1].hour, weatherInformation.forecast.forecastday[2].hour];
+export function updateForecastCardsTemp(isCelsius) {
+    const array = [
+        '.today-container',
+        '.tomorrow-container',
+        '.overmorrow-container',
+    ];
+    const weatherArray = [
+        weatherInformation.forecast.forecastday[0].hour,
+        weatherInformation.forecast.forecastday[1].hour,
+        weatherInformation.forecast.forecastday[2].hour,
+    ];
     // Iterate over each forecast container
     array.forEach((containerName, index) => {
         // Select the forecast container element
-        const forecastContainer = document.querySelector(`${containerName} .forecast-container`);
+        const forecastContainer = document.querySelector(
+            `${containerName} .forecast-container`,
+        );
         // Select all forecast items within the current forecast container
-        const forecastItems = forecastContainer.querySelectorAll('.forecast-item');
+        const forecastItems =
+            forecastContainer.querySelectorAll('.forecast-item');
         // Iterate over each forecast item
         forecastItems.forEach((item, itemIndex) => {
-            const temperatureElement = item.querySelector(".forecast-temperature");
+            const temperatureElement = item.querySelector(
+                '.forecast-temperature',
+            );
             // Check if the temperature should be displayed in Celsius
-            if(isCelsius) {
+            if (isCelsius) {
                 // Update the temperature text to Celsius
                 temperatureElement.textContent = `${weatherArray[index][itemIndex].temp_c}°C`;
             } else {
@@ -248,4 +320,59 @@ export function updateForecastCards(isCelsius) {
             }
         });
     });
+}
+
+export function changeToggleIcon(isCelsius) {
+    const image = document.getElementById('temperature-toggle');
+    if (isCelsius) {
+        image.src = celsius;
+    } else {
+        image.src = fahrenheit;
+    }
+}
+
+function updateWeather(containerName, data, isCelsius) {
+    const pathShortcut = `${containerName} .weather-card`;
+    // Update weather card image
+    const image = document.querySelector(`${pathShortcut} .weather-icon`);
+    image.src = `${data.icon}`;
+    image.alt = data.condition;
+    // Update weather card status
+    const status = document.querySelector(`${pathShortcut} .weather-status`);
+    status.textContent = `${data.condition}`;
+    // Update weather card temperature
+    const temperature = document.querySelector(
+        `${pathShortcut} .weather-temperature`,
+    );
+    if (isCelsius) {
+        temperature.textContent = `${data.temperature}`;
+    } else {
+        temperature.textContent = `${data.f_temperature}`;
+    }
+}
+
+export function updateCityWeather(weatherData, isCelsius) {
+    // Update the header with the new city name
+    const headerCity = document.getElementById('header-city-name');
+    headerCity.textContent = `${weatherData.location.name}, ${weatherData.location.region}`;
+    // Extract today's weather data
+    const currentWeather = retrieveDateWeather(weatherData, 0);
+    // Extract tomorrow's weather data
+    const tomorrowWeather = retrieveDateWeather(weatherData, 1);
+    const overmorrowWeather = retrieveDateWeather(weatherData, 2);
+    // Update the weather cards (Today, Tomorrow, Overmorrow)
+    const array = [
+        '.today-container',
+        '.tomorrow-container',
+        '.overmorrow-container',
+    ];
+    const weatherArray = [currentWeather, tomorrowWeather, overmorrowWeather];
+    array.forEach((containerName, index) => {
+        updateWeather(containerName, weatherArray[index], isCelsius);
+    });
+    todayInformation = currentWeather;
+    tomorrowInformation = tomorrowWeather;
+    overmorrowInformation = overmorrowWeather;
+    weatherInformation = weatherData;
+    updateForecastCardsTemp(isCelsius);
 }
