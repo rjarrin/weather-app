@@ -12,9 +12,7 @@ let tomorrowInformation;
 let overmorrowInformation;
 let weatherInformation;
 
-function updateCity() {
-    // TODO: Return city based on the searched result
-
+function defaultCity() {
     // Return default value
     return 'Toronto, Ontario';
 }
@@ -58,12 +56,15 @@ function generateForecastContainer(containerName, forecastData) {
 
         // Hour
         const hour = document.createElement('p');
+
         hour.textContent = data.time_epoch
             ? new Date(data.time_epoch * 1000).toLocaleTimeString([], {
                   hour: '2-digit',
                   minute: '2-digit',
               })
             : 'N/A';
+        hour.classList.add('forecast-hour');
+        // console.log(hour.textContent);
         forecastItem.appendChild(hour);
 
         // Icon
@@ -89,6 +90,34 @@ function generateForecastContainer(containerName, forecastData) {
 
     // Append the forecast container to the specified container
     container.appendChild(forecastContainer);
+
+    // In today-container, scroll to nearest hour (instead of starting from 12:00 AM on hover)
+    if (containerName === '.today-container') {
+        // Convert current hour to XX:00 AM/PM format for comparison
+        const now = new Date();
+        now.setMinutes(0);
+        now.setSeconds(0);
+        const currentHour = now.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+        // Get all forecast-item divs in the today-container
+        const forecastItems =
+            forecastContainer.querySelectorAll('.forecast-item');
+        // Loop through each item/card
+        forecastItems.forEach((item) => {
+            const hourElement = item.querySelector('.forecast-hour');
+            // Compare if hour in item matches current hour (rounded down to nearest hour)
+            if (
+                hourElement &&
+                hourElement.textContent.startsWith(currentHour)
+            ) {
+                // Scroll to the current hour
+                forecastContainer.scrollLeft =
+                    item.offsetLeft - forecastContainer.offsetLeft;
+            }
+        });
+    }
 }
 
 function retrieveDateWeather(weatherData, key) {
@@ -134,40 +163,17 @@ function retrieveDateWeather(weatherData, key) {
 }
 
 export async function generateBodyContainer(city) {
-    // const city = updateCity();
-
     const weatherData = await fetchForecastData(city);
 
     // Extract today's weather data
-    // const currentWeather = {
-    //     day: 'Today',
-    //     icon: weatherData.current.condition.icon,
-    //     condition: weatherData.current.condition.text,
-    //     temperature: `${weatherData.current.temp_c}°C`,
-    //     f_temperature: `${weatherData.current.temp_f}°F`,
-    // };
     const currentWeather = retrieveDateWeather(weatherData, 0);
     generateWeatherCard('.today-container', currentWeather);
 
     // Extract tomorrow's weather data
-    // const tomorrowWeather = {
-    //     day: 'Tomorrow',
-    //     icon: weatherData.forecast.forecastday[1].day.condition.icon,
-    //     condition: weatherData.forecast.forecastday[1].day.condition.text,
-    //     temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_c}°C`,
-    //     f_temperature: `${weatherData.forecast.forecastday[1].day.avgtemp_f}°F`,
-    // };
     const tomorrowWeather = retrieveDateWeather(weatherData, 1);
     generateWeatherCard('.tomorrow-container', tomorrowWeather);
 
     // Extract overmorrow's weather data
-    // const overmorrowWeather = {
-    //     day: 'Overmorrow',
-    //     icon: weatherData.forecast.forecastday[2].day.condition.icon,
-    //     condition: weatherData.forecast.forecastday[2].day.condition.text,
-    //     temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_c}°C`,
-    //     f_temperature: `${weatherData.forecast.forecastday[2].day.avgtemp_f}°F`,
-    // };
     const overmorrowWeather = retrieveDateWeather(weatherData, 2);
     generateWeatherCard('.overmorrow-container', overmorrowWeather);
 
@@ -209,7 +215,7 @@ export function generateHeader() {
     // Create the city name text
     const cityName = document.createElement('p');
     cityName.id = 'header-city-name';
-    cityName.textContent = updateCity();
+    cityName.textContent = defaultCity();
     // Append the title and city to the text container
     textContainer.appendChild(title);
     textContainer.appendChild(cityName);

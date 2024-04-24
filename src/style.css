@@ -142,3 +142,24 @@ footer {
 .overmorrow-container:hover .forecast-container {
     width: 80vw;
 }
+
+.dark-theme {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark-theme #header {
+    background-color: #444;
+}
+
+.dark-theme .weather-card {
+    border-color: #555;
+}
+
+.dark-theme .forecast-container {
+    border-color: #555;
+}
+
+.dark-theme .forecast-item {
+    border-color: #555;
+}
